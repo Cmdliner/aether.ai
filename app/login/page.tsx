@@ -19,7 +19,7 @@ export default function Login({ className, ...props }: HTMLAttributes<HTMLDivEle
             <div className={`flex-1/2 items-center justify-center ${cn("flex flex-col gap-6", className)} `}{...props}>
                 <Card className="min-w-sm">
                     <CardHeader>
-                        <CardTitle className="text-2xl text-center">
+                        <CardTitle className="mb-4 text-2xl text-bold text-center">
                             Æther | Login
                         </CardTitle>
                         <CardDescription>
