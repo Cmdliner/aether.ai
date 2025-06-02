@@ -1,9 +1,7 @@
 import { z } from "zod";
-import { BloodGroupEnum, GenderEnum, GenotypeEnum } from "./enums";
 
 export const RegisterBodyValidtion = z.object({
-    username: z.string().min(3, "Username must be at least 3 characters long").max(20, "Username must not exceed 20 characters"),
-    email: z.string().email("Invalid email address"),
+     email: z.string().email("Invalid email address"),
     gender: z.enum(['M', 'F'], {
         required_error: "Gender is required",
         invalid_type_error: "Gender must be a string",
@@ -64,8 +62,7 @@ export const accountFormSchema = z.object({
     password: z.string().min(8, "Password must be at least 8 characters long")
         .max(50, "Password must not exceed 50 characters"),
     confirm_password: z.string(),
-    username: z.string().min(3, "Username must be at least 3 characters long")
-        .max(20, "Username must not exceed 20 characters"),
+ 
 }).refine(data => data.password === data.confirm_password, {
     message: "Passwords do not match",
     path: ["confirm_password"],

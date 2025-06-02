@@ -1,6 +1,4 @@
-import { Document, Model, model, models, Schema, SchemaType } from "mongoose";
-
-
+import {  Model, model, models, Schema } from "mongoose";
 
 export const UserSchema = new Schema<IUser>({
     email: { type: String, required: true, unique: true },

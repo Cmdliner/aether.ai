@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     try {
         const {
-            username, email, password, full_name,
+              email, password, full_name,
             dob, gender, nationality, job_title, job_description,
             current_residence
         } = await req.json();
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
         await dbConnect();
 
         const { success, error, ...parsedBody} = await RegisterBodyValidtion.safeParseAsync({
-            username, email, password, full_name,
+               email, password, full_name,
             dob, gender, nationality, job_title, job_description,
             current_residence
         });

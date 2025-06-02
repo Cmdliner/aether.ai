@@ -1,7 +1,8 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 declare global {
     interface IUser extends Document {
+        _id: Types.ObjectId;
         email: string;
         password: string;
         full_name: string;
@@ -16,7 +17,18 @@ declare global {
             blood_group: string;
             genotype: string;
             known_conditions: string;
-        }
+        };
+        createdAt: Date;
+        updatedAt: Date;
+    }
+
+    interface IOTP extends Document {
+        _id: Types.ObjectId;
+        user_id: Types.ObjectId;
+        code: string;
+        expiresAt: Date;
+        createdAt: Date;
+        updatedAt: Date;
     }
 
     type SessionPayload = {
@@ -29,7 +41,6 @@ declare global {
         email: string;
         password: string;
         confirm_password: string;
-        username: string;
     };
 
     type PersonalFormValues = {
@@ -78,6 +89,11 @@ declare global {
         onSubmit: () => void;
         isTransitioning?: boolean;
         isLoading?: boolean;
+    };
+
+    // Session
+    type SessionData = {
+        sub: string;
     };
 }
 

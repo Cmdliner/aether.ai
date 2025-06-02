@@ -1,9 +1,10 @@
 import dbConnect from "@/lib/config/db.config";
+import { createSession } from "@/lib/session";
 import { User } from "@/models/user.model";
 import { compare } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function login(req: NextRequest) {
+export async function POST(req: NextRequest) {
     try {
         const { email, password } = await req.json();
 
@@ -19,10 +20,24 @@ export async function login(req: NextRequest) {
             status: 403
         });
 
-        // ! todo => create session
+        // Create JWT session
+        await createSession({
+            sub: user._id.toString()
+        });
 
-        return NextResponse.json({ success: true, message: 'Login successful!' }, { status: 200 });
+        return NextResponse.json({ 
+            success: true, 
+            message: 'Login successful!',
+            user: {
+                _id: user._id,
+                full_name: user.full_name
+            }
+        }, { status: 200 });
     } catch (error) {
-
+        console.error("Login error:", error);
+        return NextResponse.json({ 
+            error: true, 
+            message: error instanceof Error ? error.message : 'An unexpected error occurred'
+        }, { status: 500 });
     }
 }

@@ -5,18 +5,62 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { HTMLAttributes } from "react";
+import { redirect } from "next/navigation";
+import { FormEvent, HTMLAttributes, useState } from "react";
 
 export default function Login({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    async function handleSubmit(e: FormEvent) {
+
+        e.preventDefault();
+
+        try {
+            const body = JSON.stringify({ email, password });
+            const res = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body
+            });
+            const responseData = await res.json(); if (!res.ok) {
+                throw new Error(responseData.message || 'Registration failed. Please try again.');
+            }            // Show success message
+            toast({
+                title: "Login Successful",
+                description: "You will now be redirected to your dashboard",
+                variant: "default",
+            });
+            
+            // No need to manually set the JWT token here as it's handled by the API
+            
+            // Redirect to dashboard page after a short delay
+            setTimeout(() => {
+                window.location.href = "/dashboard";
+            }, 1500);
+
+        } catch (error) {
+            console.error("Login error: ", error);
+            toast({
+                title: "Login Failed",
+                description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
+                variant: "destructive",
+            });
+        }
+    }
     return (
         <section className="min-h-screen flex">
-            <div className="hidden md:flex flex-col flex-1/2 items-center justify-center text-2xl bg-black text-background">
+            <div className="hidden md:flex flex-col flex-1/2 items-center justify-center text-2xl bg-black text-background text-center">
                 <TypingAnimation />
             </div>
 
-            <div className={`flex-1/2 items-center justify-center ${cn("flex flex-col gap-6", className)} `}{...props}>
+            <div className={`flex-1/2 items-center justify-center bg-foreground md:bg-background ${cn("flex flex-col gap-6", className)} `}{...props}>
                 <Card className="min-w-sm">
                     <CardHeader>
                         <CardTitle className="mb-4 text-2xl text-bold text-center">
@@ -27,7 +71,7 @@ export default function Login({ className, ...props }: HTMLAttributes<HTMLDivEle
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form>
+                        <form onSubmit={(e) => handleSubmit(e)}>
                             <div className="flex flex-col gap-6">
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
@@ -35,6 +79,7 @@ export default function Login({ className, ...props }: HTMLAttributes<HTMLDivEle
                                         id="email"
                                         type="email"
                                         placeholder="yemi@example.com"
+                                        onInput={(e) => setEmail(e.currentTarget.value)}
                                         required
                                     />
                                 </div>
@@ -51,6 +96,7 @@ export default function Login({ className, ...props }: HTMLAttributes<HTMLDivEle
                                     <Input
                                         id="password"
                                         type="password"
+                                        onInput={(e) => setPassword(e.currentTarget.value)}
                                         required
                                     />
                                 </div>
