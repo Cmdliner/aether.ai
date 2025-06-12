@@ -8,10 +8,9 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { FormEvent, HTMLAttributes, useState } from "react";
+import { FormEvent, useState } from "react";
 
-export default function Login({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export default function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -60,7 +59,7 @@ export default function Login({ className, ...props }: HTMLAttributes<HTMLDivEle
                 <TypingAnimation />
             </div>
 
-            <div className={`flex-1/2 items-center justify-center bg-foreground md:bg-background ${cn("flex flex-col gap-6", className)} `}{...props}>
+            <div className="flex-1/2 items-center justify-center bg-foreground md:bg-background flex flex-col gap-6">
                 <Card className="min-w-sm">
                     <CardHeader>
                         <CardTitle className="mb-4 text-2xl text-bold text-center">
