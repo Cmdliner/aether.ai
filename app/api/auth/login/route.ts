@@ -4,6 +4,8 @@ import { User } from "@/models/user.model";
 import { compare } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
+
+
 export async function POST(req: NextRequest) {
     try {
         const { email, password } = await req.json();
@@ -18,11 +20,10 @@ export async function POST(req: NextRequest) {
         const passwordsMatch = await compare(password, user.password);
         if (!passwordsMatch) return NextResponse.json({ error: true, message: 'Invalid email or password' }, {
             status: 403
-        });
-
-        // Create JWT session
+        });        // Create JWT session with access and refresh tokens
         await createSession({
-            sub: user._id.toString()
+            sub: user._id.toString(),
+            email: user.email
         });
 
         return NextResponse.json({ 
@@ -30,7 +31,8 @@ export async function POST(req: NextRequest) {
             message: 'Login successful!',
             user: {
                 _id: user._id,
-                full_name: user.full_name
+                full_name: user.full_name,
+                email: user.email
             }
         }, { status: 200 });
     } catch (error) {

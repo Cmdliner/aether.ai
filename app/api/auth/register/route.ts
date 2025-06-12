@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/config/db.config";
 import { handleMongoUniqueError } from "@/lib/utils";
-import { RegisterBodyValidtion } from "@/lib/validations";
+import { RegisterBodyValidation } from "@/lib/validations";
 import { User } from "@/models/user.model";
 import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
         await dbConnect();
 
-        const { success, error, ...parsedBody} = await RegisterBodyValidtion.safeParseAsync({
+        const { success, error, ...parsedBody} = await RegisterBodyValidation.safeParseAsync({
                email, password, full_name,
             dob, gender, nationality, job_title, job_description,
             current_residence

@@ -89,19 +89,20 @@ export default function MedicalForm({ form, onPrevious, onSubmit, isTransitionin
                     )}
                 />
             </div>
-            <div className="flex space-x-4">        <Button
-                type="button"
-                variant="outline"
-                onClick={onPrevious}
-                className="w-full"
-                disabled={isTransitioning || isLoading}
-            >
-                Previous
-            </Button><Button
-                onClick={onSubmit}
-                className="w-full"
-                disabled={isTransitioning || isLoading}
-            >
+            <div className="flex flex-col space-y-4">
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={onPrevious}
+                    className="w-full cursor-pointer"
+                    disabled={isTransitioning || isLoading}
+                >
+                    Previous
+                </Button><Button
+                    onClick={onSubmit}
+                    className="w-full cursor-pointer"
+                    disabled={isTransitioning || isLoading}
+                >
                     {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
             </div>

@@ -34,12 +34,12 @@ export default function ProfessionalForm({ form, onPrevious, onNext, isTransitio
                     )}
                 />
             </div>
-            <div className="flex space-x-4">
+            <div className="flex space-y-4 flex-col">
                 <Button
                     type="button"
                     variant="outline"
                     onClick={onPrevious}
-                    className="w-full"
+                    className="w-full cursor-pointer"
                     disabled={isTransitioning}
                 >
                     Previous
@@ -47,7 +47,7 @@ export default function ProfessionalForm({ form, onPrevious, onNext, isTransitio
                 <Button
                     type="button"
                     onClick={onNext}
-                    className="w-full"
+                    className="w-full cursor-pointer"
                     disabled={isTransitioning}
                 >
                     {isTransitioning ? "Processing..." : "Continue"}

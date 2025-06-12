@@ -1,4 +1,5 @@
 import { Document, Types } from 'mongoose';
+import { actionTypes } from './lib/constants';
 
 declare global {
     interface IUser extends Document {
@@ -89,12 +90,54 @@ declare global {
         onSubmit: () => void;
         isTransitioning?: boolean;
         isLoading?: boolean;
-    };
-
-    // Session
+    };    // Session
     type SessionData = {
         sub: string;
+        email?: string;
+        iat?: number; // Issued at timestamp
+        exp?: number; // Expiration timestamp
     };
+
+    // use-toast types
+    type ToastActionElement = React.ReactElement
+
+    type ToastType = {
+        id: string
+        title?: React.ReactNode
+        description?: React.ReactNode
+        action?: ToastActionElement
+        variant?: "default" | "destructive"
+    }
+
+    type ToasterToast = ToastType & {
+        open: boolean
+    }
+
+
+    type ActionType = typeof actionTypes
+
+    type Action =
+        | {
+            type: ActionType["ADD_TOAST"]
+            toast: ToasterToast
+        }
+        | {
+            type: ActionType["UPDATE_TOAST"]
+            toast: Partial<ToasterToast> & { id: string }
+        }
+        | {
+            type: ActionType["DISMISS_TOAST"]
+            toastId?: string
+        }
+        | {
+            type: ActionType["REMOVE_TOAST"]
+            toastId?: string
+        }
+
+    interface State {
+        toasts: ToasterToast[]
+    }
+
 }
 
 // This export {} is needed to make TypeScript treat this file as a module

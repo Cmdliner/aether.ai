@@ -90,7 +90,7 @@ export default function PersonalForm({ form, onPrevious, onNext, isTransitioning
                     )}
                 />
             </div>
-            <div className="flex space-x-4">
+            <div className="flex flex-col space-y-4">
                 <Button
                     type="button"
                     variant="outline"

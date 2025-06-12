@@ -9,7 +9,7 @@ interface DashboardCardProps {
 
 export function DashboardCard({ icon, title, children }: DashboardCardProps) {
   return (
-    <Card className="h-full">
+    <Card className="h-full bg-inherit text-inherit bg-foreground text-background">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center text-lg font-medium">
           <span className="mr-2">{icon}</span>
