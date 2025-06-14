@@ -27,8 +27,11 @@ export default function TestRecommendationPage() {
   if (!isAuthenticated) {
     return null;
   }
-
   return (
-    <TestRecommendationForm />
+    <div className="bg-background min-h-screen">
+      <div className="max-w-6xl mx-auto px-4">
+        <TestRecommendationForm />
+      </div>
+    </div>
   );
 }

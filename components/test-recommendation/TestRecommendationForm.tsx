@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { getTestRecommendations } from "@/lib/test-recommendations";
 import { useAuth } from "@/lib/client-auth";
 import { 
@@ -22,7 +22,10 @@ import {
   Loader2,
   CheckCircle2,
   AlertTriangle,
-  FileText
+  FileText,
+  Info,
+  Clipboard,
+  ChevronRight
 } from "lucide-react";
 
 export default function TestRecommendationForm() {
@@ -33,6 +36,7 @@ export default function TestRecommendationForm() {
   const [recommendations, setRecommendations] = useState<TestRecommendationResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [userAge, setUserAge] = useState<number | null>(null);
+  const [animateResults, setAnimateResults] = useState(false);
   
   // Calculate age from date of birth
   useEffect(() => {
@@ -76,16 +80,15 @@ export default function TestRecommendationForm() {
       if (response.fallback) {
         console.warn("Using fallback recommendations due to AI service issue");
       }
-      
-      setRecommendations(response);
+        setRecommendations(response);
+      // Set animation flag for results
+      setAnimateResults(true);
     } catch (err: any) {
       setError(err.message || "Failed to get test recommendations");
     } finally {
       setLoading(false);
     }
-  };
-  return (
-    <div className="container mx-auto py-6">
+  };  return (    <div className="container mx-auto py-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Medical Test Recommendations</h1>
         <p className="text-muted-foreground">
@@ -95,33 +98,31 @@ export default function TestRecommendationForm() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Card className="bg-foreground text-background">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-lg font-medium flex items-center space-x-2">
+              <CardTitle className="text-lg font-medium flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
                 <span>Describe Your Symptoms</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <Label htmlFor="symptoms" className="flex items-center space-x-2">
+                <div className="space-y-2">
+                  <Label htmlFor="symptoms" className="flex items-center gap-2">
                     <Stethoscope className="h-4 w-4" />
                     <span>What symptoms are you experiencing?</span>
                   </Label>
-                  <div className="mt-2">
-                    <div className="relative">
-                      <textarea
-                        id="symptoms"
-                        className="w-full h-32 px-3 py-2 text-background bg-background/10 border border-white/20 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                        value={symptoms}
-                        onChange={(e) => setSymptoms(e.target.value)}
-                        placeholder="Please describe your symptoms in detail. For example: I've been experiencing headaches for the past three days, along with a mild fever and fatigue."
-                        required
-                      />
-                      <div className="absolute bottom-2 right-2 text-xs text-background/50">
-                        {symptoms.length > 0 ? `${symptoms.length} characters` : ""}
-                      </div>
+                  <div className="relative">
+                    <textarea
+                      id="symptoms"
+                      className="w-full min-h-[160px] p-3 rounded-md border border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      value={symptoms}
+                      onChange={(e) => setSymptoms(e.target.value)}
+                      placeholder="Please describe your symptoms in detail. For example: I've been experiencing headaches for the past three days, along with a mild fever and fatigue."
+                      required
+                    />
+                    <div className="absolute bottom-3 right-3 text-xs text-muted-foreground bg-secondary px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                      {symptoms.length > 0 ? `${symptoms.length} characters` : ""}
                     </div>
                   </div>
                 </div>
@@ -129,7 +130,7 @@ export default function TestRecommendationForm() {
                 <div className="pt-2">
                   <Button 
                     type="submit" 
-                    className="w-full flex items-center justify-center space-x-2 transition-all"
+                    className="w-full gap-2"
                     disabled={loading}
                   >
                     {loading ? (
@@ -150,89 +151,121 @@ export default function TestRecommendationForm() {
           </Card>
 
           {error && (
-            <div className="mt-4 p-4 bg-red-100/20 border border-red-400/30 text-red-700 rounded-md flex items-center space-x-2">
-              <AlertTriangle className="h-5 w-5" />
+            <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-md flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 shrink-0" />
               <span>{error}</span>
             </div>
           )}
-        </div>
-
-        <div className="lg:col-span-1">
-          <Card className="bg-foreground text-background h-full">
-            <CardHeader>
-              <CardTitle className="text-lg font-medium flex items-center space-x-2">
+        </div>        <div className="lg:col-span-1">
+          <Card className="bg-muted">
+            <CardHeader className="border-b">
+              <CardTitle className="text-lg font-medium flex items-center gap-2">
                 <User className="h-5 w-5" />
                 <span>Your Health Profile</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pt-6">
               {authLoading ? (
-                <div className="animate-pulse space-y-2">
-                  <div className="h-4 bg-background/20 rounded"></div>
-                  <div className="h-4 bg-background/20 rounded w-5/6"></div>
-                  <div className="h-4 bg-background/20 rounded w-4/6"></div>
+                <div className="animate-pulse space-y-4">
+                  <div className="h-6 bg-muted-foreground/20 rounded-md"></div>
+                  <div className="h-6 bg-muted-foreground/20 rounded-md w-5/6"></div>
+                  <div className="h-6 bg-muted-foreground/20 rounded-md w-4/6"></div>
                 </div>
               ) : (
                 <>
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="h-4 w-4 text-background/70" />
-                    <span className="text-background/70">Age:</span>
+                  <div className="flex items-center p-2 hover:bg-muted-foreground/10 rounded-lg transition-colors cursor-pointer">
+                    <Calendar className="h-5 w-5 text-foreground" />
+                    <span className="ml-2 text-muted-foreground">Age:</span>
                     <p className="ml-auto font-medium">{userAge || "Not provided"}</p>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <User className="h-4 w-4 text-background/70" />
-                    <span className="text-background/70">Gender:</span>
+                  <div className="flex items-center p-2 hover:bg-muted-foreground/10 rounded-lg transition-colors cursor-pointer">
+                    <User className="h-5 w-5 text-foreground" />
+                    <span className="ml-2 text-muted-foreground">Gender:</span>
                     <p className="ml-auto font-medium">{user?.gender === 'M' ? 'Male' : user?.gender === 'F' ? 'Female' : 'Not provided'}</p>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Flag className="h-4 w-4 text-background/70" />
-                    <span className="text-background/70">Ethnicity:</span>
+                  <div className="flex items-center p-2 hover:bg-muted-foreground/10 rounded-lg transition-colors cursor-pointer">
+                    <Flag className="h-5 w-5 text-foreground" />
+                    <span className="ml-2 text-muted-foreground">Ethnicity:</span>
                     <p className="ml-auto font-medium">{user?.nationality || "Not provided"}</p>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Map className="h-4 w-4 text-background/70" />
-                    <span className="text-background/70">Location:</span>
+                  <div className="flex items-center p-2 hover:bg-muted-foreground/10 rounded-lg transition-colors cursor-pointer">
+                    <Map className="h-5 w-5 text-foreground" />
+                    <span className="ml-2 text-muted-foreground">Location:</span>
                     <p className="ml-auto font-medium">{user?.current_residence || "Not provided"}</p>
                   </div>
                 </>
               )}
-              <p className="text-sm text-background/70 pt-2 flex items-center space-x-2">
-                <FileText className="h-4 w-4 flex-shrink-0" />
-                <span>This information helps personalize your test recommendations.</span>
-              </p>
+              <div className="mt-4 p-3 bg-secondary/50 rounded-lg border border-border">
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Info className="h-4 w-4 flex-shrink-0" />
+                  <span>This information helps personalize your test recommendations.</span>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
-      </div>
-      
-      {recommendations && recommendations.recommended_tests.length > 0 && (        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">
-            Recommended Tests
-            {recommendations.fallback && (
-              <span className="ml-2 text-sm font-normal px-2 py-1 bg-yellow-100/20 border border-yellow-400/30 text-yellow-700 rounded-full">
-                Fallback Results
-              </span>
-            )}
-          </h2><div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      </div>      {recommendations && recommendations.recommended_tests.length > 0 && (
+        <div className="mt-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold flex items-center">
+              <span>Recommended Tests</span>
+              {recommendations.fallback && (
+                <span className="ml-4 text-xs font-medium px-2.5 py-0.5 bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-500 rounded-full inline-flex items-center gap-1">
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  Fallback Results
+                </span>
+              )}
+            </h2>
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Clipboard className="h-4 w-4" />
+              <span>Save Results</span>
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {recommendations.recommended_tests.map((test, index) => (
-              <Card key={index} className="bg-foreground text-background">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg font-medium flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-400" />
-                    {test.test_name}
+              <Card key={index} className="hover:shadow-sm transition-shadow cursor-pointer">
+                <CardHeader className="pb-2 border-b">
+                  <CardTitle className="text-base font-medium flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+                        <CheckCircle2 className="h-4 w-4" />
+                      </div>
+                      <span>{test.test_name}</span>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <p><strong>Why:</strong> {test.reason}</p>
-                  <p className="text-sm text-background/70">{test.notes}</p>
+                <CardContent className="space-y-4 pt-4">
+                  <div className="p-3 rounded-md bg-muted border border-border">
+                    <p className="font-medium text-foreground mb-1 text-sm">Why this test?</p>
+                    <p className="text-muted-foreground text-sm">{test.reason}</p>
+                  </div>
+                  <div className="flex items-start gap-2.5 text-sm">
+                    <span className="bg-secondary p-1.5 rounded-full flex-shrink-0">
+                      <FileText className="h-3.5 w-3.5" />
+                    </span>
+                    <div>
+                      <p className="font-medium text-foreground text-sm">Additional Notes</p>
+                      <p className="text-muted-foreground text-sm">{test.notes}</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             ))}
           </div>
           
-          <div className="mt-6 p-4 bg-blue-900/20 border border-blue-800/30 text-blue-100 rounded-md text-sm">
-            <strong>Disclaimer:</strong> {recommendations.disclaimer}
-          </div>
+          <Card className="mt-8">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4" />
+                <span>Medical Disclaimer</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{recommendations.disclaimer}</p>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
