@@ -46,8 +46,7 @@ export default function PersonalForm({ form, onPrevious, onNext, isTransitioning
                             <FormMessage />
                         </FormItem>
                     )}
-                />
-                <FormField
+                />                <FormField
                     control={form.control}
                     name="dob"
                     render={({ field }) => (
@@ -57,6 +56,7 @@ export default function PersonalForm({ form, onPrevious, onNext, isTransitioning
                                 <DatePicker
                                     value={field.value}
                                     onChange={field.onChange}
+                                    disabled={false}
                                 />
                             </FormControl>
                             <FormMessage />
