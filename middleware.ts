@@ -8,10 +8,8 @@ const getJwtSecret = () => {
   );
 };
 
-// Define the algorithm to use
 const ALGORITHM = 'HS256';
 
-// Array of protected routes that need authentication
 const protectedRoutes = [
     '/dashboard',
     '/profile',
@@ -21,28 +19,21 @@ const protectedRoutes = [
 export async function middleware(req: NextRequest) {
     const path = req.nextUrl.pathname;
 
-    // Only check authentication for protected routes
     if (protectedRoutes.some(route => path.startsWith(route))) {
         const authToken = req.cookies.get('auth_token')?.value;
 
         if (!authToken) {
-            // No access token, redirect to login
             const url = new URL('/login', req.url);
             url.searchParams.set('from', path);
             return NextResponse.redirect(url);
         }
         
         try {
-            // Verify the token with jose
             await jose.jwtVerify(authToken, getJwtSecret(), {
                 algorithms: [ALGORITHM]
             });
-            // Token is valid, continue
             return NextResponse.next();
         } catch (error) {
-            // Token validation failed - could be expired
-            // The API routes will handle refresh token automatically
-            // Redirect to login for simplicity in the middleware
             console.error("Token validation error:", error);
             const url = new URL('/login', req.url);
             url.searchParams.set('from', path);
@@ -50,11 +41,9 @@ export async function middleware(req: NextRequest) {
         }
     }
 
-    // For public routes, continue normally
     return NextResponse.next();
 }
 
-// Configure the middleware to run on specific paths
 export const config = {
     matcher: [
         '/dashboard/:path*',

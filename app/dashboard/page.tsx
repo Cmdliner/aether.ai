@@ -15,9 +15,7 @@ export default function Dashboard() {
     const { isLoading, isAuthenticated, user } = useAuth();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            router.push('/login');
-        }
+        if (!isLoading && !isAuthenticated) router.push("/login")
     }, [isLoading, isAuthenticated, router]);
 
     if (isLoading) {
@@ -28,8 +26,7 @@ export default function Dashboard() {
         );
     }
 
-    if (!isAuthenticated) {
-        return null;
+    if (!isAuthenticated) return null;
     return (
         <main className="container mx-auto py-6 px-4">
             <WelcomeSection userName={user?.full_name?.split(" ")?.[0] ?? "User"} />
@@ -62,5 +59,5 @@ export default function Dashboard() {
             </div>
         </main>
     );
-}
+
 }
