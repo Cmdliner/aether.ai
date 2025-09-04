@@ -23,7 +23,6 @@ export default function TestRecommendationPage() {
     );
   }
 
-  // Redirect if not authenticated (handled by useEffect)
   if (!isAuthenticated) {
     return null;
   }

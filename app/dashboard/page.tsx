@@ -28,12 +28,20 @@ export default function Dashboard() {
         );
     }
 
-    // Redirect if not authenticated (handled by useEffect)
     if (!isAuthenticated) {
         return null;
-    } return (
+    return (
         <main className="container mx-auto py-6 px-4">
             <WelcomeSection userName={user?.full_name?.split(" ")?.[0] ?? "User"} />
+
+            <div className="flex justify-end mb-4">
+                <a
+                    href="/dashboard/tests/recommend"
+                    className="bg-primary text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-primary/90 transition-colors"
+                >
+                    Recommend a Test
+                </a>
+            </div>
 
             <QuickActions />
 
@@ -54,4 +62,5 @@ export default function Dashboard() {
             </div>
         </main>
     );
+}
 }

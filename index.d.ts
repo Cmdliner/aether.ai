@@ -94,8 +94,8 @@ declare global {
     type SessionData = {
         sub: string;
         email?: string;
-        iat?: number; // Issued at timestamp
-        exp?: number; // Expiration timestamp
+        iat?: number;
+        exp?: number;
     };
 
     // use-toast types
@@ -140,5 +140,4 @@ declare global {
 
 }
 
-// This export {} is needed to make TypeScript treat this file as a module
 export { }

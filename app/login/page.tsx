@@ -54,24 +54,26 @@ export default function Login() {
         }
     }
     return (
-        <section className="min-h-screen flex">
-            <div className="hidden md:flex flex-col flex-1/2 items-center justify-center text-2xl bg-black text-background text-center">
+        <section className="min-h-screen w-full flex flex-col md:flex-row">
+            {/* Left side: black background, only visible on desktop */}
+            <div className="hidden md:flex w-1/2 min-h-screen items-center justify-center bg-black text-background">
                 <TypingAnimation />
             </div>
 
-            <div className="flex-1/2 items-center justify-center bg-foreground md:bg-background flex flex-col gap-6">
-                <Card className="min-w-sm">
+            {/* Right side: light background, full width on mobile, half on desktop */}
+            <div className="w-full md:w-1/2 min-h-screen flex items-center justify-center bg-background p-4 md:p-8">
+                <Card className="w-full max-w-md shadow-lg border-none">
                     <CardHeader>
-                        <CardTitle className="mb-4 text-2xl text-bold text-center">
+                        <CardTitle className="mb-2 text-2xl font-bold text-center">
                             Æther | Login
                         </CardTitle>
-                        <CardDescription>
+                        <CardDescription className="text-center text-base">
                             Enter your email below to login to your account
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={(e) => handleSubmit(e)}>
-                            <div className="flex flex-col gap-6">
+                        <form onSubmit={handleSubmit} className="w-full">
+                            <div className="flex flex-col gap-4">
                                 <div className="grid gap-2">
                                     <Label htmlFor="email">Email</Label>
                                     <Input
@@ -80,6 +82,7 @@ export default function Login() {
                                         placeholder="yemi@example.com"
                                         onInput={(e) => setEmail(e.currentTarget.value)}
                                         required
+                                        className="text-base px-3 py-2"
                                     />
                                 </div>
                                 <div className="grid gap-2">
@@ -87,7 +90,7 @@ export default function Login() {
                                         <Label htmlFor="password">Password</Label>
                                         <a
                                             href="/forgot-password"
-                                            className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                                            className="ml-auto text-sm underline-offset-4 hover:underline"
                                         >
                                             Forgot your password?
                                         </a>
@@ -97,14 +100,15 @@ export default function Login() {
                                         type="password"
                                         onInput={(e) => setPassword(e.currentTarget.value)}
                                         required
+                                        className="text-base px-3 py-2"
                                     />
                                 </div>
-                                <Button type="submit" className="w-full">
+                                <Button type="submit" className="w-full py-2 text-base font-semibold">
                                     Login
                                 </Button>
                             </div>
                             <div className="mt-4 text-center text-sm">
-                                Don&apos;t have an account?{" "}
+                                Don&apos;t have an account?{' '}
                                 <Link href="/register" className="underline underline-offset-4">
                                     Sign up
                                 </Link>
